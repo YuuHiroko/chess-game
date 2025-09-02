@@ -19,8 +19,7 @@
         <button id="themeToggle" class="icon-btn" title="Toggle theme">🌙</button>
         <label class="switch">
           <input id="soundToggle" type="checkbox" checked />
-          <span class="slider"></span>
-          <span class="label">Sound</span>
+          <span class="slider"></span><span class="label">Sound</span>
         </label>
       </div>
     </header>
@@ -34,10 +33,12 @@
           </div>
         </div>
 
-        <div id="board" class="board" role="application" aria-label="Chess board" tabindex="0"></div>
-
-        <div class="coords files" aria-hidden="true" id="files"></div>
-        <div class="coords ranks" aria-hidden="true" id="ranks"></div>
+        <div class="board-area">
+          <div id="evalBar" class="eval-bar" aria-hidden="true"><div id="evalFill"></div></div>
+          <div id="board" class="board" role="application" aria-label="Chess board" tabindex="0"></div>
+          <div class="coords files" aria-hidden="true" id="files"></div>
+          <div class="coords ranks" aria-hidden="true" id="ranks"></div>
+        </div>
 
         <div class="board-foot">
           <div class="player-row">
@@ -114,6 +115,10 @@
             <button id="undoBtn">Undo</button>
             <button id="flipBtn">Flip</button>
           </div>
+
+          <div class="row">
+            <div id="openingName" class="small muted" aria-live="polite"></div>
+          </div>
         </div>
 
         <div class="card">
@@ -130,9 +135,9 @@
         <div class="card">
           <div class="section-head">
             <div>Engine analysis</div>
-            <div class="small" id="engineStatus">Idle</div>
+            <div class="small" id="engineStatus">Engine: loading…</div>
           </div>
-          <canvas id="evalGraph" class="graph" width="340" height="80" aria-label="Evaluation graph"></canvas>
+          <canvas id="evalGraph" class="graph" width="360" height="90" aria-label="Evaluation graph"></canvas>
           <div class="row grid-2">
             <label class="field small">
               <span>Depth</span>
@@ -140,7 +145,7 @@
             </label>
             <label class="field small">
               <span>MultiPV</span>
-              <input type="number" id="multiPV" min="1" max="5" value="1" />
+              <input type="number" id="multiPV" min="1" max="4" value="1" />
             </label>
           </div>
           <pre id="pvBox" class="pv" aria-live="polite"></pre>
@@ -151,7 +156,7 @@
         </div>
 
         <div class="card">
-          <div class="section-head"><div>PGN / FEN</div></div>
+          <div class="section-head"><div>PGN / FEN / Editor</div></div>
           <div class="row grid-2">
             <button id="copyFEN">Copy FEN</button>
             <button id="pasteFEN">Paste FEN</button>
@@ -176,7 +181,7 @@
         </div>
 
         <div class="card small">
-          <div id="statusBar" class="statusline">Ready</div>
+          <div id="statusBar" class="statusline">Loading…</div>
         </div>
       </aside>
     </main>
@@ -195,8 +200,6 @@
     </form>
   </dialog>
 
-  <!-- Engine worker wrapper and chess rules -->
-  <script src="lib/chess.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
