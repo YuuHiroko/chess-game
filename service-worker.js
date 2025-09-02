@@ -1,7 +1,5 @@
 const CACHE = "chess-offline-v3";
-const SHELL = [
-  "./","./index.html","./styles.css","./app.js","./engine-worker.js","./manifest.json"
-];
+const SHELL = ["./","./index.html","./styles.css","./app.js","./engine-worker.js","./manifest.json"];
 const CDN_RE = /cdn\.jsdelivr\.net|unpkg\.com/;
 
 self.addEventListener("install", e=>{
@@ -13,17 +11,16 @@ self.addEventListener("activate", e=>{
   self.clients.claim();
 });
 self.addEventListener("fetch", e=>{
-  const req = e.request;
+  const req=e.request;
   e.respondWith(
     caches.match(req).then(cached=>{
       if (cached) return cached;
       return fetch(req).then(res=>{
         if (req.method==="GET"){
           try{
-            const url=new URL(req.url);
-            if (url.origin===location.origin || CDN_RE.test(url.host)){
-              const copy=res.clone();
-              caches.open(CACHE).then(c=>c.put(req, copy));
+            const u=new URL(req.url);
+            if (u.origin===location.origin || CDN_RE.test(u.host)){
+              const copy=res.clone(); caches.open(CACHE).then(c=>c.put(req, copy));
             }
           }catch{}
         }
