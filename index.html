@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#5b8dff" />
+  <title>Chess — Offline (AI & Local) | Lichess style</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <noscript>This app needs JavaScript enabled.</noscript>
+
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">♟️ Chess</div>
+      <div class="spacer"></div>
+      <div class="top-actions">
+        <button id="themeToggle" class="icon-btn" title="Toggle theme">🌙</button>
+        <label class="switch">
+          <input id="soundToggle" type="checkbox" checked />
+          <span class="slider"></span>
+          <span class="label">Sound</span>
+        </label>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="board-wrap">
+        <div class="board-head">
+          <div class="player-row">
+            <div class="player-label" id="topPlayerLabel">Black</div>
+            <div class="clock" id="topClock">—:—</div>
+          </div>
+        </div>
+
+        <div id="board" class="board" role="application" aria-label="Chess board" tabindex="0"></div>
+
+        <div class="coords files" aria-hidden="true" id="files"></div>
+        <div class="coords ranks" aria-hidden="true" id="ranks"></div>
+
+        <div class="board-foot">
+          <div class="player-row">
+            <div class="player-label" id="bottomPlayerLabel">White</div>
+            <div class="clock" id="bottomClock">—:—</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side">
+        <div class="card">
+          <div class="row grid-2">
+            <label class="field">
+              <span>Mode</span>
+              <select id="mode">
+                <option value="ai" selected>Vs Computer</option>
+                <option value="pvp">Two Players</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Difficulty</span>
+              <select id="difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+                <option value="engine">Engine (Stockfish)</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="row grid-2">
+            <label class="field">
+              <span>Who starts</span>
+              <select id="whoStarts">
+                <option value="white" selected>White</option>
+                <option value="black">Black</option>
+                <option value="random">Random</option>
+                <option value="alternate">Alternate</option>
+              </select>
+            </label>
+            <label class="field" id="yourSideWrap">
+              <span>Your side</span>
+              <select id="yourSide">
+                <option value="white" selected>White</option>
+                <option value="black">Black</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="row grid-2">
+            <label class="field">
+              <span>Per-move timer</span>
+              <select id="moveTimer">
+                <option value="0" selected>Off</option>
+                <option value="10">10s</option>
+                <option value="20">20s</option>
+                <option value="30">30s</option>
+                <option value="60">60s</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Board theme</span>
+              <select id="boardTheme">
+                <option value="green" selected>Green</option>
+                <option value="brown">Brown</option>
+                <option value="blue">Blue</option>
+                <option value="dark">Dark</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="row grid-3">
+            <button id="newGame" class="primary">New</button>
+            <button id="undoBtn">Undo</button>
+            <button id="flipBtn">Flip</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <div>Moves</div>
+            <div class="row gap">
+              <button id="prevMove">⏮</button>
+              <button id="nextMove">⏭</button>
+            </div>
+          </div>
+          <ol id="moveList" class="movelist"></ol>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <div>Engine analysis</div>
+            <div class="small" id="engineStatus">Idle</div>
+          </div>
+          <canvas id="evalGraph" class="graph" width="340" height="80" aria-label="Evaluation graph"></canvas>
+          <div class="row grid-2">
+            <label class="field small">
+              <span>Depth</span>
+              <input type="range" id="depthRange" min="8" max="32" value="16" />
+            </label>
+            <label class="field small">
+              <span>MultiPV</span>
+              <input type="number" id="multiPV" min="1" max="5" value="1" />
+            </label>
+          </div>
+          <pre id="pvBox" class="pv" aria-live="polite"></pre>
+          <div class="row grid-2">
+            <button id="analyzeToggle">Live analyze</button>
+            <button id="annotateGame">Annotate game</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-head"><div>PGN / FEN</div></div>
+          <div class="row grid-2">
+            <button id="copyFEN">Copy FEN</button>
+            <button id="pasteFEN">Paste FEN</button>
+          </div>
+          <div class="row grid-2">
+            <button id="exportPGN">Export PGN</button>
+            <button id="importPGN">Import PGN</button>
+          </div>
+          <textarea id="pgnBox" class="pgn" placeholder="PGN here..."></textarea>
+          <div class="row grid-2">
+            <button id="startEditor">Board editor</button>
+            <button id="exitEditor" disabled>Done</button>
+          </div>
+        </div>
+
+        <div class="card small">
+          <div class="section-head"><div>Options</div></div>
+          <label class="check"><input type="checkbox" id="showCoords" checked /> Show coordinates</label>
+          <label class="check"><input type="checkbox" id="showLegal" checked /> Show legal move dots</label>
+          <label class="check"><input type="checkbox" id="showLast" checked /> Highlight last move</label>
+          <label class="check"><input type="checkbox" id="useUnicode" checked /> Unicode pieces (fast)</label>
+        </div>
+
+        <div class="card small">
+          <div id="statusBar" class="statusline">Ready</div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Promotion dialog -->
+  <dialog id="promoDialog">
+    <form method="dialog" class="promo">
+      <div>Promote to:</div>
+      <div class="promo-choices">
+        <button value="q">Queen</button>
+        <button value="r">Rook</button>
+        <button value="b">Bishop</button>
+        <button value="n">Knight</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Engine worker wrapper and chess rules -->
+  <script src="lib/chess.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
