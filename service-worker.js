@@ -1,10 +1,11 @@
-const CACHE = "chess-offline-v2";
-const ASSETS = [
+const CACHE = "chess-offline-v3";
+const SHELL = [
   "./","./index.html","./styles.css","./app.js","./engine-worker.js","./manifest.json"
 ];
+const CDN_RE = /cdn\.jsdelivr\.net|unpkg\.com/;
 
 self.addEventListener("install", e=>{
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).catch(()=>{}));
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).catch(()=>{}));
   self.skipWaiting();
 });
 self.addEventListener("activate", e=>{
@@ -12,20 +13,22 @@ self.addEventListener("activate", e=>{
   self.clients.claim();
 });
 self.addEventListener("fetch", e=>{
+  const req = e.request;
   e.respondWith(
-    caches.match(e.request).then(cached=>{
+    caches.match(req).then(cached=>{
       if (cached) return cached;
-      return fetch(e.request).then(res=>{
-        if (e.request.method==="GET"){
+      return fetch(req).then(res=>{
+        if (req.method==="GET"){
           try{
-            const url=new URL(e.request.url);
-            if (url.origin===location.origin || /cdn.jsdelivr|unpkg\.com|githubusercontent|github/.test(url.host)){
-              const copy=res.clone(); caches.open(CACHE).then(c=>c.put(e.request, copy));
+            const url=new URL(req.url);
+            if (url.origin===location.origin || CDN_RE.test(url.host)){
+              const copy=res.clone();
+              caches.open(CACHE).then(c=>c.put(req, copy));
             }
           }catch{}
         }
         return res;
-      }).catch(()=> e.request.mode==="navigate" ? caches.match("./index.html") : undefined)
+      }).catch(()=> req.mode==="navigate" ? caches.match("./index.html") : undefined)
     })
   );
 });
