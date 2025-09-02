@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#5b8dff" />
-  <title>Chess — Offline (AI & Local) | Lichess Style</title>
+  <title>Chess — Offline (AI & Local)</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -36,6 +36,7 @@
         <div class="board-area">
           <div id="evalBar" class="eval-bar" aria-hidden="true"><div id="evalFill"></div></div>
           <div class="board-shell">
+            <canvas id="overlay" class="overlay" aria-hidden="true"></canvas>
             <div id="board" class="board" role="application" aria-label="Chess board" tabindex="0"></div>
             <div class="coords files" aria-hidden="true" id="files"></div>
             <div class="coords ranks" aria-hidden="true" id="ranks"></div>
@@ -115,7 +116,10 @@
           <div class="row grid-3">
             <button id="newGame" class="primary">New</button>
             <button id="undoBtn">Undo</button>
-            <button id="flipBtn">Flip</button>
+            <div class="row gap">
+              <button id="flipBtn">Flip</button>
+              <button id="fsBtn" title="Fullscreen board">⤢</button>
+            </div>
           </div>
 
           <div class="row">
@@ -155,6 +159,10 @@
             <button id="analyzeToggle">Live analyze</button>
             <button id="annotateGame">Annotate game</button>
           </div>
+          <div class="row grid-2">
+            <button id="hintBtn" class="primary">Hint</button>
+            <button id="clearHint">Clear hint</button>
+          </div>
         </div>
 
         <div class="card">
@@ -189,18 +197,17 @@
     </main>
   </div>
 
-  <!-- Promotion dialog -->
-  <dialog id="promoDialog">
-    <form method="dialog" class="promo">
-      <div>Promote to:</div>
-      <div class="promo-choices">
-        <button value="q">Queen</button>
-        <button value="r">Rook</button>
-        <button value="b">Bishop</button>
-        <button value="n">Knight</button>
+  <!-- Game Over modal -->
+  <div id="modalOverlay" class="modal-overlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button id="closeModal" class="modal-close" aria-label="Close">×</button>
+      <h2 id="modalTitle">Game Over</h2>
+      <p id="modalSubtitle" class="modal-sub"></p>
+      <div class="modal-actions">
+        <button id="playAgain" class="primary">Play again</button>
       </div>
-    </form>
-  </dialog>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
