@@ -1,0 +1,13 @@
+{
+  "name": "Chess (Offline)",
+  "short_name": "Chess",
+  "description": "Offline chess with AI (Stockfish), analysis, eval graph, PGN tools, timers, and a Lichess-style UI.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#5b8dff",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
