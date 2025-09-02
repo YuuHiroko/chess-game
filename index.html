@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en" data-theme="auto">
+<html lang="en" data-theme="auto" data-board="green">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#5b8dff" />
-  <title>Chess — Offline (AI & Local) | Lichess style</title>
+  <title>Chess — Offline (AI & Local) | Lichess Style</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -35,9 +35,11 @@
 
         <div class="board-area">
           <div id="evalBar" class="eval-bar" aria-hidden="true"><div id="evalFill"></div></div>
-          <div id="board" class="board" role="application" aria-label="Chess board" tabindex="0"></div>
-          <div class="coords files" aria-hidden="true" id="files"></div>
-          <div class="coords ranks" aria-hidden="true" id="ranks"></div>
+          <div class="board-shell">
+            <div id="board" class="board" role="application" aria-label="Chess board" tabindex="0"></div>
+            <div class="coords files" aria-hidden="true" id="files"></div>
+            <div class="coords ranks" aria-hidden="true" id="ranks"></div>
+          </div>
         </div>
 
         <div class="board-foot">
@@ -125,8 +127,8 @@
           <div class="section-head">
             <div>Moves</div>
             <div class="row gap">
-              <button id="prevMove">⏮</button>
-              <button id="nextMove">⏭</button>
+              <button id="prevMove" title="Previous move">⏮</button>
+              <button id="nextMove" title="Next move">⏭</button>
             </div>
           </div>
           <ol id="moveList" class="movelist"></ol>
@@ -141,7 +143,7 @@
           <div class="row grid-2">
             <label class="field small">
               <span>Depth</span>
-              <input type="range" id="depthRange" min="8" max="32" value="16" />
+              <input type="range" id="depthRange" min="8" max="32" value="18" />
             </label>
             <label class="field small">
               <span>MultiPV</span>
