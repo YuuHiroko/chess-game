@@ -1,14 +1,11 @@
-// Stockfish wrapper worker (WASM via stockfish.js)
-// Loads local ./engine/stockfish.js if present, otherwise CDNs (passed from main).
-// Replies: ready | info (depth/cp/mate/pv) | bestmove | error
-
+// Stockfish wrapper worker (CDN fallback). Safe if offline at first run.
 let sf=null, ready=false;
 function postErr(s){ postMessage({ type:"error", message:s }); }
 function tok(line,key){ const m=line.match(new RegExp("\\b"+key+"\\s+(\\S+)")); return m?m[1]:undefined; }
 function nextTok(line,prefix){ const i=line.indexOf(prefix); if(i<0) return; const s=line.slice(i+prefix.length).trim(); return s.split(/\s+/)[0]; }
 
 function onSF(e){
-  const line = (typeof e.data==="string") ? e.data : (e.data?.data||"");
+  const line=(typeof e.data==="string")?e.data:(e.data?.data||"");
   if (!line) return;
   if (line.startsWith("readyok")){ ready=true; postMessage({ type:"ready" }); }
   if (line.startsWith("info")){
@@ -19,21 +16,15 @@ function onSF(e){
     const i=line.indexOf(" pv "); const pv=i>=0?line.slice(i+4):"";
     postMessage({ type:"info", depth, cp, mate, scoreText: mate!==undefined?("#"+mate):((cp!==undefined)?(cp/100).toFixed(2):""), pv });
   }
-  if (line.startsWith("bestmove")){
-    const parts=line.split(/\s+/);
-    postMessage({ type:"bestmove", bestmove: parts[1] });
-  }
+  if (line.startsWith("bestmove")){ const parts=line.split(/\s+/); postMessage({ type:"bestmove", bestmove: parts[1] }); }
 }
 
 async function loadEngine(urls){
   try{ importScripts("engine/stockfish.js"); sf=self; }catch{}
-  if (!sf){
-    for (const u of urls){ try{ importScripts(u); sf=self; break; }catch{} }
-  }
+  if (!sf){ for (const u of urls){ try{ importScripts(u); sf=self; break; }catch{} } }
   if (!sf){ postErr("Engine failed to load. Try once online to cache it."); return; }
   sf.onmessage=onSF;
-  sf.postMessage("uci");
-  sf.postMessage("isready");
+  sf.postMessage("uci"); sf.postMessage("isready");
 }
 
 onmessage=(e)=>{
