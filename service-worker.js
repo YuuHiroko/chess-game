@@ -1,4 +1,4 @@
-const CACHE = "chess-offline-v3";
+const CACHE = "chess-offline-v4";
 const SHELL = ["./","./index.html","./styles.css","./app.js","./engine-worker.js","./manifest.json"];
 const CDN_RE = /cdn\.jsdelivr\.net|unpkg\.com/;
 
